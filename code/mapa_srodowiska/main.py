@@ -3,6 +3,16 @@ import Imath
 import os
 import OpenGL.GL as gl
 import OpenGL.GLUT as glut
+import OpenGL.GLU as glu
+import math
+
+# Camera parameters
+camera_angle_x = 0.0
+camera_angle_y = 0.0
+camera_distance = 2.0
+mouse_last_x = 0
+mouse_last_y = 0
+mouse_left_down = False
 
 def load_hdr_environment_map(filepath):
     """
@@ -82,26 +92,46 @@ def display_hdr_image(width, height, hdr_image):
     gl.glViewport(0, 0, glut.glutGet(glut.GLUT_WINDOW_WIDTH), glut.glutGet(glut.GLUT_WINDOW_HEIGHT))
     gl.glMatrixMode(gl.GL_PROJECTION)
     gl.glLoadIdentity()
-    gl.glOrtho(0, 1, 0, 1, -1, 1)
+    glu.gluPerspective(45.0, glut.glutGet(glut.GLUT_WINDOW_WIDTH) / float(glut.glutGet(glut.GLUT_WINDOW_HEIGHT)), 0.1, 100.0)
     gl.glMatrixMode(gl.GL_MODELVIEW)
     gl.glLoadIdentity()
     
-    # Draw a textured quad
-    gl.glBegin(gl.GL_QUADS)
-    gl.glTexCoord2f(0.0, 0.0)
-    gl.glVertex2f(0.0, 0.0)
-    gl.glTexCoord2f(1.0, 0.0)
-    gl.glVertex2f(1.0, 0.0)
-    gl.glTexCoord2f(1.0, 1.0)
-    gl.glVertex2f(1.0, 1.0)
-    gl.glTexCoord2f(0.0, 1.0)
-    gl.glVertex2f(0.0, 1.0)
-    gl.glEnd()
+    # Apply camera transformations
+    gl.glTranslatef(0.0, 0.0, -camera_distance)
+    gl.glRotatef(camera_angle_y, 1.0, 0.0, 0.0)
+    gl.glRotatef(camera_angle_x, 0.0, 1.0, 0.0)
+    
+    # Draw a textured sphere to simulate being inside the HDR environment
+    quadric = glu.gluNewQuadric()
+    glu.gluQuadricTexture(quadric, gl.GL_TRUE)
+    glu.gluSphere(quadric, 50.0, 50, 50)
+    glu.gluDeleteQuadric(quadric)
     
     # Disable texture mapping
     gl.glDisable(gl.GL_TEXTURE_2D)
     
     glut.glutSwapBuffers()
+
+def mouse_motion(x, y):
+    global mouse_last_x, mouse_last_y, camera_angle_x, camera_angle_y
+    if mouse_left_down:
+        dx = x - mouse_last_x
+        dy = y - mouse_last_y
+        camera_angle_x += dx * 0.1
+        camera_angle_y += dy * 0.1
+    mouse_last_x = x
+    mouse_last_y = y
+    glut.glutPostRedisplay()
+
+def mouse_button(button, state, x, y):
+    global mouse_left_down
+    if button == glut.GLUT_LEFT_BUTTON:
+        if state == glut.GLUT_DOWN:
+            mouse_left_down = True
+            mouse_last_x = x
+            mouse_last_y = y
+        elif state == glut.GLUT_UP:
+            mouse_left_down = False
 
 def main(filepath):    
     try:
@@ -117,6 +147,10 @@ def main(filepath):
         # Set display callback
         glut.glutDisplayFunc(lambda: display_hdr_image(width, height, hdr_map))
         
+        # Set mouse callbacks
+        glut.glutMotionFunc(mouse_motion)
+        glut.glutMouseFunc(mouse_button)
+        
         # Start the GLUT main loop
         glut.glutMainLoop()
     except Exception as e:
@@ -124,5 +158,5 @@ def main(filepath):
 
 # Example usage
 if __name__ == "__main__":
-    filepath = "lilienstein_1k.exr"
+    filepath = "lilienstein_4k.exr"
     main(filepath)
