@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def ray_trace(image_width=400, image_height=300, output_file="fig.png"):
+def ray_trace(scene, environment, image_width=400, image_height=300, output_file="fig.png"):
     IMAGE_WIDTH = image_width
     IMAGE_HEIGHT = image_height
 

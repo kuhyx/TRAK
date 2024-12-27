@@ -22,7 +22,7 @@ def main():
     # Run the selected algorithm
     if args.algorithm == "ray_tracing":
         print("Starting ray tracing...")
-        ray_trace(image_width=width, image_height=height, output_file="output_ray_traced.png")
+        ray_trace(args.scene, args.environment_map, image_width=width, image_height=height, output_file="output_ray_traced.png")
     else:
         print(f"Unknown algorithm: {args.algorithm}")
         return
