@@ -15,6 +15,8 @@ def main():
     parser.add_argument('--resolution', type=str, help='Image resolution (WIDTHxHEIGHT)',
                         default=config.get('DEFAULT', 'resolution'))
 
+    parser.add_argument('--num_spheres', type=int, default=3, help='Number of spheres in the scene')
+
     args = parser.parse_args()
 
     width, height = parse_resolution(args.resolution)
@@ -22,7 +24,9 @@ def main():
     # Run the selected algorithm
     if args.algorithm == "ray_tracing":
         print("Starting ray tracing...")
-        ray_trace(args.scene, args.environment_map, image_width=width, image_height=height, output_file="output_ray_traced.png")
+        # ray_trace(args.scene, args.environment_map, image_width=width, image_height=height, output_file="output_ray_traced.png")
+        ray_trace(args.num_spheres, args.environment_map, image_width=width, image_height=height, # na razie generujemy w kodzie, ale potem trzeba będzie obj wczytywać
+                  output_file="output_ray_traced.png")
     else:
         print(f"Unknown algorithm: {args.algorithm}")
         return

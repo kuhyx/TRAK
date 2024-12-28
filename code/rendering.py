@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def ray_trace(scene, environment, image_width=400, image_height=300, output_file="fig.png"):
+def ray_trace(num_spheres, environment, image_width=400, image_height=300, output_file="fig.png"):
     IMAGE_WIDTH = image_width
     IMAGE_HEIGHT = image_height
 
@@ -340,15 +340,26 @@ def ray_trace(scene, environment, image_width=400, image_height=300, output_file
             'reflection': .25
         }
 
+    scene = []
 
     # List of objects.
     color_plane0 = 1. * np.ones(3)
     color_plane1 = 0. * np.ones(3)
-    scene = [add_sphere([.75, .1, 1.], .6, [1., 0., 0.]),
-             add_sphere([-.75, .1, 2.25], .6, [0., 1., 0.]),
-             add_sphere([-2.75, .1, 3.5], .6, [0., 0., 1.]),
-             add_plane([0., -.5, 0.], [0., 1., 0.]),
-             ]
+    scene.append(add_plane([0., -0.5, 0.], [0., 1., 0.]))
+    base_radius = 1 / np.sqrt(num_spheres)  # Im więcej kul, tym mniejsze
+    base_distance = 4.5  / num_spheres
+
+    for i in range(num_spheres):
+        # Wyliczanie pozycji każdej kuli
+        x = (i - num_spheres // 2) * base_distance
+        y = 0.1
+        z = 1. + i * 0.5
+
+        # Dynamiczny kolor (gradient na podstawie indeksu)
+        color = np.array([i / num_spheres, (num_spheres - i) / num_spheres, 0.5])
+
+        # Dodanie kuli do sceny
+        scene.append(add_sphere([x, y, z], base_radius, color))
 
     # Light position and color.
     L = np.array([5., 5., -10.])
