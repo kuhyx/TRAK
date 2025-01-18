@@ -33,11 +33,3 @@ def setup_scene(width=400, height=300, environment="miramar.jpeg"):
     Sc.add_Background(environment)
 
     return Sc
-
-
-    # # Render
-    # img = Sc.render(samples_per_pixel = 6)
-    #
-    # img.save("EXAMPLE1.png")
-    #
-    # img.show()
