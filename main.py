@@ -4,7 +4,7 @@ from rendering import ray_trace
 from utils import load_config, parse_resolution
 import importlib
 import os
-from scenes.cornell_box import *
+# from scenes.cornell_box import *
 
 def main():
     # default config
@@ -36,12 +36,12 @@ def main():
         print("Starting ray tracing...")
         try:
             print(args.scene)
-            # scene_module = importlib.import_module(f"scenes.{args.scene}")
+            scene_module = importlib.import_module(f"scenes.{args.scene}")
         except ModuleNotFoundError:
             print(f"Error: Scene '{args.scene}' not found in the 'scenes' directory.")
             return
         try:
-            scene = setup_scene(width=width, height=height)
+            scene = scene_module.setup_scene(width=width, height=height)
         except AttributeError:
             print(f"Error: Scene '{args.scene}' does not define a `setup_scene` function.")
             return

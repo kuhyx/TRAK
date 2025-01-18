@@ -1,7 +1,8 @@
 from sightpy import *
 
 # define materials to use
-def setup_scene(width=400, height=300, spp=6):
+def setup_scene(width=400, height=300):
+
     blue_glass = Refractive(n=vec3(1.5 + 4e-8j, 1.5 + 4e-8j, 1.5 + 0.j))  # n = index of refraction
     green_glass = Refractive(n=vec3(1.5 + 4e-8j, 1.5 + 0.j, 1.5 + 4e-8j))
     red_glass = Refractive(n=vec3(1.5 + 0.j, 1.5 + 5e-8j, 1.5 + 5e-8j))
@@ -16,8 +17,8 @@ def setup_scene(width=400, height=300, spp=6):
     angle = np.pi / 2 * 0.3
     Sc.add_Camera(look_from=vec3(2.5 * np.sin(angle), 0.25, 2.5 * np.cos(angle) - 1.5),
                   look_at=vec3(0., 0.25, -1.5),
-                  screen_width=400,
-                  screen_height=300)
+                  screen_width=width,
+                  screen_height=height)
 
     Sc.add_DirectionalLight(Ldir=vec3(0.52, 0.45, -0.5), color=rgb(0.15, 0.15, 0.15))
 

@@ -1,7 +1,7 @@
 from sightpy import *
 
 # define materials to use
-def setup_scene(width=400, height=300, spp=6):
+def setup_scene(width=400, height=300):
     gold_metal = Glossy(diff_color = rgb(1., .572, .184), n = vec3(0.15+3.58j, 0.4+2.37j, 1.54+1.91j), roughness = 0.0, spec_coeff = 0.2, diff_coeff= 0.8) # n = index of refraction
     bluish_metal = Glossy(diff_color = rgb(0.0, 0, 0.1), n = vec3(1.3+1.91j, 1.3+1.91j, 1.4+2.91j), roughness = 0.2,spec_coeff = 0.5, diff_coeff= 0.3)
 
@@ -19,8 +19,8 @@ def setup_scene(width=400, height=300, spp=6):
     angle = -np.pi/2 * 0.3
     Sc.add_Camera(look_from = vec3(2.5*np.sin(angle), 0.25, 2.5*np.cos(angle)  -1.5 ),
                   look_at = vec3(0., 0.25, -3.),
-                  screen_width = 400 ,
-                  screen_height = 300)
+                  screen_width = width ,
+                  screen_height = height)
 
 
 
@@ -36,11 +36,3 @@ def setup_scene(width=400, height=300, spp=6):
     Sc.add_Background("stormydays.png")
 
     return Sc
-
-
-    # # Render
-    # img = Sc.render(samples_per_pixel = 6)
-    #
-    # img.save("EXAMPLE1.png")
-    #
-    # img.show()

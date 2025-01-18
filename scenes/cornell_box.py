@@ -1,7 +1,7 @@
 from sightpy import *
 
 # define materials to use
-def setup_scene(width=400, height=300, samples_per_pixel=6):
+def setup_scene(width=400, height=300):
 
     Sc = Scene(ambient_color=rgb(0.00, 0.00, 0.00))
 
@@ -116,11 +116,3 @@ def setup_scene(width=400, height=300, samples_per_pixel=6):
     )
 
     return Sc
-
-
-    # # Render
-    # img = Sc.render(samples_per_pixel = 6)
-    #
-    # img.save("EXAMPLE1.png")
-    #
-    # img.show()
