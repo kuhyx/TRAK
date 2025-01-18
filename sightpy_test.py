@@ -1,6 +1,7 @@
 from sightpy import *
 
-
+screen_width = 100
+screen_height = 100
 # Set Scene
 
 Sc = Scene(ambient_color=rgb(0.00, 0.00, 0.00))
@@ -9,8 +10,8 @@ Sc = Scene(ambient_color=rgb(0.00, 0.00, 0.00))
 angle = -0
 
 Sc.add_Camera(
-    screen_width=100,
-    screen_height=100,
+    screen_width=screen_width,
+    screen_height=screen_height,
     look_from=vec3(278, 278, 800),
     look_at=vec3(278, 278, 0),
     focal_distance=1.0,
