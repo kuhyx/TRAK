@@ -1,7 +1,7 @@
 from sightpy import *
 
 # define materials to use
-def setup_scene(width=400, height=300):
+def setup_scene(width=400, height=300, environment=None):
 
     Sc = Scene(ambient_color=rgb(0.00, 0.00, 0.00))
 

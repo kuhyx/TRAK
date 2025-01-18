@@ -1,7 +1,7 @@
 from sightpy import *
 
 # define materials to use
-def setup_scene(width=400, height=300):
+def setup_scene(width=400, height=300, environment="miramar.jpeg"):
 
     blue_glass = Refractive(n=vec3(1.5 + 4e-8j, 1.5 + 4e-8j, 1.5 + 0.j))  # n = index of refraction
     green_glass = Refractive(n=vec3(1.5 + 4e-8j, 1.5 + 0.j, 1.5 + 4e-8j))
@@ -30,7 +30,7 @@ def setup_scene(width=400, height=300):
                  v_axis=vec3(0, 0, -1.0), max_ray_depth=3))
 
     # see sightpy/backgrounds
-    Sc.add_Background("miramar.jpeg")
+    Sc.add_Background(environment)
 
     return Sc
 

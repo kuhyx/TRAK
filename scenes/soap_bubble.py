@@ -1,7 +1,7 @@
 from sightpy import *
 
 # define materials to use
-def setup_scene(width=400, height=300):
+def setup_scene(width=400, height=300, environment="lake.png"):
     # Set Scene
 
     Sc = Scene(ambient_color=rgb(0.01, 0.01, 0.01))
@@ -14,14 +14,6 @@ def setup_scene(width=400, height=300):
     soap_bubble = ThinFilmInterference(thickness=330, noise=60.)
     Sc.add(Sphere(material=soap_bubble, center=vec3(1., 0.0, 1.5), radius=1.7, shadow=False, max_ray_depth=5))
 
-    Sc.add_Background("lake.png", light_intensity=5., blur=10.)
+    Sc.add_Background(environment, blur=10.)
 
     return Sc
-
-
-    # # Render
-    # img = Sc.render(samples_per_pixel = 6)
-    #
-    # img.save("EXAMPLE1.png")
-    #
-    # img.show()

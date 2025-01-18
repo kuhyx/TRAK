@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--algorithm', type=str, help='Algorithm to use', default=config.get('DEFAULT', 'algorithm'))
     parser.add_argument('--scene', type=str, help='Name of the scene to render (without .py).', default=config.get('DEFAULT', 'scene'))
     parser.add_argument('--environment', type=str, help='Environment file', default=config.get('DEFAULT', 'environment'))
+    parser.add_argument('--env_blur', type=str, help='Environment blur', default=config.get('DEFAULT', 'env_blur'))
     parser.add_argument('--resolution', type=str, help='Image resolution (WIDTHxHEIGHT)',
                         default=config.get('DEFAULT', 'resolution'))
     parser.add_argument("--samples_per_pixel", type=int, default=config.get('ray_tracing', 'samples_per_pixel'), help="Samples per pixel for rendering.")
@@ -41,7 +42,7 @@ def main():
             print(f"Error: Scene '{args.scene}' not found in the 'scenes' directory.")
             return
         try:
-            scene = scene_module.setup_scene(width=width, height=height)
+            scene = scene_module.setup_scene(width=width, height=height, environment=f"{args.environment}")
         except AttributeError:
             print(f"Error: Scene '{args.scene}' does not define a `setup_scene` function.")
             return

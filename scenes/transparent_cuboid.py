@@ -1,7 +1,7 @@
 from sightpy import *
 
 # define materials to use
-def setup_scene(width=400, height=300):
+def setup_scene(width=400, height=300, environment="stormydays.png"):
     floor = Glossy(diff_color=image("checkered_floor.png", repeat=2.), roughness=0.2, spec_coeff=0.3, diff_coeff=0.7,
                    n=vec3(2.2, 2.2, 2.2))  # n = index of refraction
     green_glass = Refractive(n=vec3(1.5 + 4e-8j, 1.5 + 0.j, 1.5 + 4e-8j))
@@ -22,6 +22,6 @@ def setup_scene(width=400, height=300):
     Sc.add(cb)
 
     # see sightpy/backgrounds
-    Sc.add_Background("stormydays.png")
+    Sc.add_Background(environment)
 
     return Sc
