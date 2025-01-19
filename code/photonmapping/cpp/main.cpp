@@ -55,20 +55,33 @@ Plane plane(Vector3(0, -1, 0), Vector3(0, 1, 0), Vector3(0.5, 0.5, 0.5)); // Gra
 Vector3 light_position(-5, 5, -5);
 Vector3 light_power(1000.0, 1000.0, 1000.0);  // Intense white light, will scale in code
 
-// Parameters
-int num_photons = 10000;   // Number of photons to emit
-int max_depth = 5;         // Maximum number of bounces
-double gather_radius = 0.5; // Radius for radiance estimation
 
 // Functions
-void emit_photons();
-void trace_photon(Photon photon, int depth);
-Vector3 trace_ray(const Vector3& ray_origin, const Vector3& ray_direction);
+void emit_photons(const int num_photons, const int max_depth);
+void trace_photon(Photon photon, int depth, const int max_depth);
+Vector3 trace_ray(const Vector3& ray_origin, const Vector3& ray_direction, const double gather_radius);
 Vector3 compute_direct_light(const Vector3& point, const Vector3& normal);
-Vector3 estimate_radiance(const Vector3& point, const Vector3& normal);
+Vector3 estimate_radiance(const Vector3& point, const Vector3& normal, const double gather_radius);
 
 // Main execution
-int main() {
+int main(int argc, char* argv[]) {
+    int num_photons = 10000;
+    int max_depth = 5;         // Maximum number of bounces
+    double gather_radius = 0.5;
+
+
+
+
+    // Check if the number of photons is provided as a command-line argument
+    if (argc > 1) {
+        num_photons = std::atoi(argv[1]);
+        if (num_photons <= 0) {
+            std::cerr << "Invalid number of photons. Using default value: 10000" << std::endl;
+            num_photons = 10000;
+        }
+    }
+    std::cout << "Number of photons: " << num_photons << std::endl;
+
     // Seed random number generator
     rng.seed(std::random_device()());
     
@@ -77,7 +90,7 @@ int main() {
     objects.push_back(&sphere); object_types.push_back(0);
     objects.push_back(&plane);  object_types.push_back(1);
     
-    emit_photons();
+    emit_photons(num_photons, max_depth);
     std::cout << "Photons stored in photon map: " << photon_map.size() << std::endl;
     
     std::cout << "Rendering image..." << std::endl;
@@ -95,7 +108,7 @@ int main() {
             double py = (1 - 2 * (y + 0.5) / double(height)) * tan(fov / 2.0);
             Vector3 ray_origin(0, 0, 0);
             Vector3 ray_direction = Vector3(px, py, -1).normalize();
-            Vector3 color = trace_ray(ray_origin, ray_direction);
+            Vector3 color = trace_ray(ray_origin, ray_direction, gather_radius);
             image[y * width + x] = Vector3(
                 std::min(color.x, 1.0),
                 std::min(color.y, 1.0),
@@ -123,17 +136,16 @@ int main() {
     return 0;
 }
 
-void emit_photons() {
+void emit_photons(const int num_photons, const int max_depth) {
     Vector3 per_photon_power = light_power / num_photons; // Scale light power per photon
     for (int i = 0; i < num_photons; ++i) {
-        // Emit photons in random directions from the light source
         Vector3 direction = random_unit_vector();
         Photon photon(light_position, direction, per_photon_power);
-        trace_photon(photon, 0);
+        trace_photon(photon, 0, max_depth);
     }
 }
 
-void trace_photon(Photon photon, int depth) {
+void trace_photon(Photon photon, int depth, const int max_depth) {
     if (depth > max_depth) {
         return;
     }
@@ -169,11 +181,11 @@ void trace_photon(Photon photon, int depth) {
         photon.direction = new_direction;
         // Absorb some power
         photon.power = photon.power * 0.8; // Simple absorption
-        trace_photon(photon, depth + 1);
+        trace_photon(photon, depth + 1, max_depth);
     }
 }
 
-Vector3 trace_ray(const Vector3& ray_origin, const Vector3& ray_direction) {
+Vector3 trace_ray(const Vector3& ray_origin, const Vector3& ray_direction, const double gather_radius) {
     double closest_t = std::numeric_limits<double>::infinity();
     void* hit_object = nullptr;
     int hit_type = -1;
@@ -203,7 +215,7 @@ Vector3 trace_ray(const Vector3& ray_origin, const Vector3& ray_direction) {
     }
     if (hit_object) {
         Vector3 direct_light = compute_direct_light(hit_point, normal);
-        Vector3 indirect_light = estimate_radiance(hit_point, normal);
+        Vector3 indirect_light = estimate_radiance(hit_point, normal, gather_radius);
         return obj_color * (direct_light + indirect_light); // Component-wise multiplication
     } else {
         return Vector3(0, 0, 0); // Background color
@@ -242,7 +254,7 @@ Vector3 compute_direct_light(const Vector3& point, const Vector3& normal) {
     }
 }
 
-Vector3 estimate_radiance(const Vector3& point, const Vector3& normal) {
+Vector3 estimate_radiance(const Vector3& point, const Vector3& normal, const double gather_radius) {
     // Gather photons within the gather_radius
     Vector3 accumulated_power(0.0, 0.0, 0.0);
     for (const auto& photon : photon_map) {
