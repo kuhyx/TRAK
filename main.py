@@ -48,7 +48,7 @@ def main():
             return
         # Renderowanie
         print(f"Rendering scene '{args.scene}' with {args.samples_per_pixel} samples per pixel...")
-        img = scene.render(samples_per_pixel=args.samples_per_pixel, progress_bar=True)
+        img = scene.render(samples_per_pixel=args.samples_per_pixel)
         output_path = os.path.join("outputs", args.output)
         img.save(output_path)
         print(f"Image saved to {output_path}")
