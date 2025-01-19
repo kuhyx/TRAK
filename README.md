@@ -36,10 +36,10 @@ W programie powinny znaleźć się m.in.:
 
 ```bash
 # Wywołanie algorytmu ray tracing z domyślnymi parametrami i sceną
-python main.py --algorithm ray_tracing
+python photon_mapping.py --algorithm ray_tracing
 ```
 
 ```bash
 # Wywołanie algorytmu ray tracing ze specyfikacją sceny z folderu scenes, liczbą sampli na pixek, rozdzielczością, środowiskiem i rozmyciem środowiska
-python main.py --scene three_spheres --samples_per_pixel 100 --resolution 100x100 --environment lake.png --env_blur 10
+python photon_mapping.py --scene three_spheres --samples_per_pixel 100 --resolution 100x100 --environment lake.png --env_blur 10
 ```
