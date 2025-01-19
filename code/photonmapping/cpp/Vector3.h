@@ -20,6 +20,4 @@ public:
     Vector3 normalize() const { double n = norm(); return Vector3(x/n, y/n, z/n); }
 };
 
-typedef Vector3 Color;
-
 #endif // VECTOR3_H
