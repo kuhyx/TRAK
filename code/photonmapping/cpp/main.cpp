@@ -4,6 +4,7 @@
 #include <limits>
 #include <random>
 #include <fstream>
+#include <fstream>
 #include "Vector3.h"
 #include "Sphere.h"
 #include "Plane.h"
@@ -46,11 +47,13 @@ Vector3 random_hemisphere_direction(const Vector3& normal) {
 std::vector<Photon> photon_map;
 std::vector<void*> objects;  // Pointers to objects
 std::vector<int> object_types; // 0 for Sphere, 1 for Plane
+int ray_number = 0;
+int photon_number = 0;
+
 
 // Scene setup
 Sphere sphere(Vector3(0, 0, -5), 1.0, Vector3(1, 0, 0));         // Red sphere
 Plane plane(Vector3(0, -1, 0), Vector3(0, 1, 0), Vector3(0.5, 0.5, 0.5)); // Gray plane
-
 // Light source
 Vector3 light_position(-5, 5, -5);
 Vector3 light_power(1000.0, 1000.0, 1000.0);  // Intense white light, will scale in code
@@ -66,21 +69,33 @@ Vector3 estimate_radiance(const Vector3& point, const Vector3& normal, const dou
 // Main execution
 int main(int argc, char* argv[]) {
     int num_photons = 10000;
-    int max_depth = 5;         // Maximum number of bounces
+    int max_depth = 5;
     double gather_radius = 0.5;
 
-
-
-
-    // Check if the number of photons is provided as a command-line argument
     if (argc > 1) {
         num_photons = std::atoi(argv[1]);
         if (num_photons <= 0) {
-            std::cerr << "Invalid number of photons. Using default value: 10000" << std::endl;
+            std::cerr << "Invalid number of photons. Using default: 10000" << std::endl;
             num_photons = 10000;
         }
     }
+    if (argc > 2) {
+        max_depth = std::atoi(argv[2]);
+        if (max_depth < 0) {
+            std::cerr << "Invalid max_depth. Using default: 5" << std::endl;
+            max_depth = 5;
+        }
+    }
+    if (argc > 3) {
+        gather_radius = std::atof(argv[3]);
+        if (gather_radius <= 0) {
+            std::cerr << "Invalid gather_radius. Using default: 0.5" << std::endl;
+            gather_radius = 0.5;
+        }
+    }
     std::cout << "Number of photons: " << num_photons << std::endl;
+    std::cout << "Max depth: " << max_depth << std::endl;
+    std::cout << "Gather radius: " << gather_radius << std::endl;
 
     // Seed random number generator
     rng.seed(std::random_device()());
@@ -91,7 +106,7 @@ int main(int argc, char* argv[]) {
     objects.push_back(&plane);  object_types.push_back(1);
     
     emit_photons(num_photons, max_depth);
-    std::cout << "Photons stored in photon map: " << photon_map.size() << std::endl;
+    const int photons_in_map = photon_map.size();
     
     std::cout << "Rendering image..." << std::endl;
     int width = 200;
@@ -102,7 +117,7 @@ int main(int argc, char* argv[]) {
     double fov = M_PI / 3.0;  // 60 degrees field of view
     
     for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
+        for (int x = 0; x < width; ++x) {    
             // Convert pixel coordinate to camera ray
             double px = (2 * (x + 0.5) / double(width) - 1) * tan(fov / 2.0) * aspect_ratio;
             double py = (1 - 2 * (y + 0.5) / double(height)) * tan(fov / 2.0);
@@ -132,6 +147,12 @@ int main(int argc, char* argv[]) {
         ofs << r << " " << g << " " << b << "\n";
     }
     ofs.close();
+    std::cout << "Image generated" << std::endl; 
+    std::cout << "width: " << width << std::endl;
+    std::cout << "height: " << width << std::endl;
+    std::cout << "photons in map: " << photons_in_map << std::endl;
+    std::cout << "count of photons: " << photon_number << std::endl;
+    std::cout << "count of rays: " << ray_number << std::endl;
     std::cout << "Image saved to render.ppm" << std::endl;
     return 0;
 }
@@ -146,6 +167,7 @@ void emit_photons(const int num_photons, const int max_depth) {
 }
 
 void trace_photon(Photon photon, int depth, const int max_depth) {
+    photon_number++;
     if (depth > max_depth) {
         return;
     }
@@ -186,6 +208,7 @@ void trace_photon(Photon photon, int depth, const int max_depth) {
 }
 
 Vector3 trace_ray(const Vector3& ray_origin, const Vector3& ray_direction, const double gather_radius) {
+    ray_number++;
     double closest_t = std::numeric_limits<double>::infinity();
     void* hit_object = nullptr;
     int hit_type = -1;
