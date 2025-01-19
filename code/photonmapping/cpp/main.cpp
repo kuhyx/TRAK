@@ -5,6 +5,7 @@
 #include <random>
 #include <fstream>
 #include <fstream>
+#include <chrono>
 #include "Vector3.h"
 #include "Sphere.h"
 #include "Plane.h"
@@ -68,6 +69,7 @@ Vector3 estimate_radiance(const Vector3& point, const Vector3& normal, const dou
 
 // Main execution
 int main(int argc, char* argv[]) {
+    auto start = std::chrono::high_resolution_clock::now(); // Start timer
     int num_photons = 10000;
     int max_depth = 5;
     double gather_radius = 0.5;
@@ -154,6 +156,8 @@ int main(int argc, char* argv[]) {
     std::cout << "count of photons: " << photon_number << std::endl;
     std::cout << "count of rays: " << ray_number << std::endl;
     std::cout << "Image saved to render.ppm" << std::endl;
+    std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now() - start;
+    std::cout << "Execution time: " << elapsed.count() << " seconds" << std::endl;
     return 0;
 }
 
