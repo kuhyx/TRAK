@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import time
 
 PHOTONS = 0
-RAYS = 0
 
 # Define basic vector operations
 class Vector3:
@@ -162,8 +161,6 @@ def render_image(width, height):
     return image
 
 def trace_ray(ray_origin, ray_direction):
-    global RAYS
-    RAYS += 1
     closest_t = np.inf
     hit_object = None
     hit_info = None
@@ -229,7 +226,7 @@ if __name__ == '__main__':
         f"photons (emitted): {num_photons}\n"
         f"photons (reflected): {PHOTONS - num_photons}\n"
         f"photons (total): {PHOTONS}\n"
-        f"rays: {RAYS}\n"
+        f"rays: {width*height}\n"
         )
     
     # Display the image
