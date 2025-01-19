@@ -216,7 +216,7 @@ if __name__ == '__main__':
     emit_photons()
     
     print("Rendering image...")
-    width = 200
+    width = 100
     height = 100
     t0 = time.time()
     image = render_image(width, height)
@@ -226,7 +226,7 @@ if __name__ == '__main__':
         f"photons (emitted): {num_photons}\n"
         f"photons (reflected): {PHOTONS - num_photons}\n"
         f"photons (total): {PHOTONS}\n"
-        f"rays: {width*height}\n"
+        f"rays: {width*height}"
         )
     
     # Display the image

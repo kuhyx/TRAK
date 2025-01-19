@@ -91,7 +91,7 @@ class Scene():
         RAYS, PRIMARY_RAYS = get_rays()
         
         print (f"Render Took: {round(time.time() - t0, 2)}s\n"
-               f"resolution: {self.camera.screen_width}x{self.camera.screen_height}"
+               f"resolution: {self.camera.screen_width}x{self.camera.screen_height}\n"
                f"rays (total): {RAYS}\n"
                f"rays (primary): {PRIMARY_RAYS}\n"
                f"rays (secondary): {RAYS-PRIMARY_RAYS}")

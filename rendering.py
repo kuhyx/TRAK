@@ -422,4 +422,4 @@ def ray_trace(num_spheres, environment, image_width=400, image_height=300, outpu
           f"reflections: {reflections}\n"
           f"rays (initial): {initialRays}\n"
           f"rays (secondary): {rays - initialRays}\n"
-          f"rays (total): {rays}\n")
+          f"rays (total): {rays}")
